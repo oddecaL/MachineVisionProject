@@ -1,0 +1,9 @@
+﻿image,width,height,condition,decoded_count,formats,payloads,methods,processing_ms
+code128-1.png,416,330,original,1,BarcodeFormat.Code128,168901,Enhanced,378.6
+code128-1-darkened.png,416,330,darkened,1,BarcodeFormat.Code128,168901,Enhanced,359.0
+datamatrix-378.png,52,24,original,1,BarcodeFormat.DataMatrix,Data Matrix Code,Enhanced,10.6
+datamatrix-378-darkened.png,52,24,darkened,1,BarcodeFormat.DataMatrix,Data Matrix Code,Enhanced,10.1
+ean13-01.webp,240,100,original,2,BarcodeFormat.EAN13; BarcodeFormat.EAN13,9780596008574; 4784599008574,Enhanced; Adaptive threshold,73.6
+ean13-01-darkened.png,240,100,darkened,1,BarcodeFormat.EAN13,9780596008574,Enhanced,75.9
+qrcode-1.png,404,404,original,1,BarcodeFormat.QRCode,"When we at WRT talk about \""text,\"" we are generally talking about a particular kind of readable information encoding - and readable is a complex proposition. Text may be stylized in a way we are unfamiliar with, as in blackletter - it may be interspersed with some markup we don\'t understand, such as HTML - it may be be a substitution system we aren\'t familiar with, such as braille or morse code - or it may be a system that, while technically human-readable, isn\'t particularly optimized for reading by humans, as with barcodes (although barcodes can be read).",Enhanced,432.2
+qrcode-1-darkened.png,404,404,darkened,1,BarcodeFormat.QRCode,"When we at WRT talk about \""text,\"" we are generally talking about a particular kind of readable information encoding - and readable is a complex proposition. Text may be stylized in a way we are unfamiliar with, as in blackletter - it may be interspersed with some markup we don\'t understand, such as HTML - it may be be a substitution system we aren\'t familiar with, such as braille or morse code - or it may be a system that, while technically human-readable, isn\'t particularly optimized for reading by humans, as with barcodes (although barcodes can be read).",Enhanced,422.2

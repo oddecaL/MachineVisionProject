@@ -1,0 +1,5 @@
+streamlit>=1.36,<2
+opencv-python>=4.9,<5
+numpy>=1.26,<3
+Pillow>=10,<13
+zxing-cpp>=2.2,<3

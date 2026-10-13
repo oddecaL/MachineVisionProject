@@ -1,0 +1,8 @@
+degradation,best_pipeline,decoded,success,readability_score,ground_truth
+darkness,Sharpen + Threshold,BAR-ADAPT-DEMO-001,True,62.22,BAR-ADAPT-DEMO-001
+uneven_illumination,Sharpen + Threshold,BAR-ADAPT-DEMO-001,True,62.22,BAR-ADAPT-DEMO-001
+gaussian_noise,Bilateral Denoise + CLAHE,BAR-ADAPT-DEMO-001,True,60.01,BAR-ADAPT-DEMO-001
+salt_and_pepper,Sharpen + Threshold,,False,60.63,BAR-ADAPT-DEMO-001
+gaussian_blur,Sharpen + Threshold,BAR-ADAPT-DEMO-001,True,62.22,BAR-ADAPT-DEMO-001
+motion_blur,Sharpen + Threshold,BAR-ADAPT-DEMO-001,True,65.79,BAR-ADAPT-DEMO-001
+perspective_distortion,Sharpen + Threshold,BAR-ADAPT-DEMO-001,True,64.43,BAR-ADAPT-DEMO-001

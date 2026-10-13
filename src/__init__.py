@@ -1,0 +1,1 @@
+"""BAR-ADAPT source package."""

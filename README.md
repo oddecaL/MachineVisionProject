@@ -1,73 +1,91 @@
-# LumaScan — Machine Vision Low Light Scanner
+# BAR-ADAPT
 
-A local browser-based barcode scanner for challenging lighting. LumaScan combines low-light image enhancement with multi-view barcode decoding and a visual inspection interface.
+BAR-ADAPT is a degradation-aware image enhancement system for improving barcode readability in difficult industrial imaging conditions. The project combines image-quality analysis, candidate enhancement pipelines, barcode decoding, and a Streamlit dashboard for local inspection.
 
 ## Features
 
-- Upload common image formats or capture a still frame from a webcam.
-- Recover shadow detail with CLAHE, a configurable gamma curve, denoising, and sharpening.
-- Decode using ZXing-C++, trying rotated, downscaled, and inverted views where supported.
-- Choose Fast, Balanced, or Deep scan. Deep scan adds adaptive-threshold and Sobel-gradient morphology views based on the supplied OpenCV reference project.
-- See barcode outlines, decoded text, format, processing time, and the view that decoded each symbol.
-- Download an annotated PNG and export scan results as CSV.
-- Runs locally; images are processed in the app process and are not sent to a hosted service.
+- Image ingestion for PNG, JPG, JPEG, and BMP files
+- Degradation analysis: brightness, contrast, blur, noise, glare, surface-curvature cues, orientation, and approximate barcode size
+- Multiple candidate enhancement pipelines, including CLAHE, gamma correction, denoising, sharpening, thresholding, perspective normalization, glare suppression, inpainting, and curved-surface correction
+- Barcode decoding with `pyzbar`
+- Reconstruction-oriented recovery for small missing or occluded barcode structures where local information remains available
+- Readability scoring based on interpretable image and decoding metrics
+- Reproducible synthetic evaluation pipeline and CSV export
+- Local dashboard with Streamlit for inspection and download
 
-## Requirements
-
-- Python 3.10 or newer (64-bit recommended).
-- A modern browser. Camera access requires the browser to allow access; localhost is treated as a secure context by modern browsers.
-
-## Run on Windows
-
-Open PowerShell in this folder and run:
-
-```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-Streamlit opens the interface in your browser, usually at `http://localhost:8501`.
-
-## Run on macOS or Linux
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-## Use
-
-1. Choose **Upload image** or **Camera snapshot** in the sidebar.
-2. Set **Shadow recovery** higher for dark frames. Start with **Balanced**; select **Deep scan** for small, low-contrast, or difficult symbols.
-3. Select **Enhance & scan**. Inspect the decoded payload and detection overlay.
-4. Download the annotated image or CSV results as needed.
-
-The camera option captures one still image; it does not continuously scan video. For best results, keep the barcode in focus, fill a reasonable portion of the frame, and avoid specular glare.
-
-## How the vision pipeline works
-
-The original project demonstrates horizontal-versus-vertical Sobel gradients, thresholding, morphology, and ZBar decoding. LumaScan keeps that gradient/morphology idea as one of its deeper search views. It adds a shadow-lifted CLAHE/gamma view, denoising and sharpening, adaptive thresholding, and a modern ZXing-C++ decoder. Multiple enhanced views are tried and duplicate format/payload pairs are collapsed into one result.
-
-## Supported formats
-
-ZXing-C++ supports common retail and machine-readable symbologies, including QR Code, Data Matrix, Aztec, PDF417, Code 128, Code 39, EAN/UPC, and ITF. Actual decode success depends on image quality, symbol size, focus, and damage.
-
-## Project layout
+## Project structure
 
 ```text
-Machine Vision Low Light Scanner/
+BAR-ADAPT/
 ├── app.py
+├── main.py
 ├── requirements.txt
 ├── README.md
-└── .gitignore
+├── config.py
+├── images/
+├── results/
+├── src/
+│   ├── __init__.py
+│   ├── image_loader.py
+│   ├── degradation_analysis.py
+│   ├── enhancement.py
+│   ├── barcode_decoder.py
+│   ├── adaptive_selector.py
+│   ├── readability_metrics.py
+│   └── evaluation.py
+├── tests/
+│   └── test_pipeline.py
+├── data/
+└── results/
 ```
 
-## License
+## Getting started
 
-This implementation is provided under the MIT License. ZXing-C++, OpenCV, Streamlit, NumPy, and Pillow retain their respective licenses.
+1. Create a Python 3.11+ environment.
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the Streamlit app:
+
+```bash
+streamlit run app.py
+```
+
+4. Or run a CLI analysis:
+
+```bash
+python main.py --image images/example.png
+```
+
+## Research framing and defensible novelty
+
+The project does not claim a completely new barcode decoder or a revolutionary image-restoration algorithm. Instead, it adopts a realistic, defensible research position: a degradation-aware selection framework that chooses among established enhancement strategies based on barcode-specific evidence rather than image aesthetics alone.
+
+Relevant existing work and tools include:
+
+- ZXing, a mature and widely used barcode decoding library: https://github.com/zxing/zxing
+- zxing-cpp, a modern C++/cross-platform decoder often used as a high-performance alternative: https://github.com/zxing-cpp/zxing-cpp
+- pyzbar, a Python wrapper for barcode decoding that is practical for local prototype work: https://github.com/NaturalHistoryMuseum/pyzbar
+- OpenCV image-processing pipelines, including CLAHE, thresholding, perspective transforms, denoising, and blur analysis: https://docs.opencv.org/
+- Many industrial barcode readers from vendors such as Cognex, Zebra, and Honeywell already include built-in restoration, glare handling, and geometric correction, but their internal logic is proprietary and not directly reproducible in an academic project.
+
+A realistic limitation that can be investigated is this: when a barcode image is degraded by uneven illumination, blur, glare, or compression-like artifacts, a single enhancement step does not reliably maximize decoding success. Existing decoders can read many clean or moderately degraded images, but the best enhancement branch depends on the degradation type and the barcode geometry. This makes a degradation-aware selector and barcode-specific validation pipeline a valid, testable experimental contribution.
+
+This project’s narrow, defensible contribution is therefore not a claim that it invents barcode restoration from scratch. Instead, it provides a transparent, measurable framework to:
+
+- estimate dominant degradation conditions;
+- generate multiple enhancement candidates;
+- select the best branch using decoder success and barcode-specific readability metrics;
+- compare the chosen branch against the original and individual operations; and
+- evaluate the effect through reproducible synthetic degradation experiments.
+
+This is suitable for a third-year project because it is grounded in standard computer-vision tools, uses measurable outcomes, and is explicitly framed as a practical pipeline-selection contribution rather than a pseudo-novel filter.
+
+## Notes
+
+- This project is designed for offline use on a local machine.
+- The enhancement and selection modules are intentionally modular so they can be tested independently.
+- Barcode decoding may fail when a barcode is severely degraded, saturated, or missing information.
